@@ -106,6 +106,11 @@ export class AppComponent {
     this.onFilterChange();
   }
 
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.onFilterChange();
+  }
+
   resetAll(): void {
     this.selectedLanguages = [...this.availableLanguages];
     this.categoryInput = '';
@@ -135,12 +140,15 @@ export class AppComponent {
     const term = this.searchTerm.toLowerCase().trim();
     let results = this.allExamples;
 
-    // Filter by selected languages
-    if (this.selectedLanguages.length > 0) {
-      results = results.filter(example =>
-        this.selectedLanguages.includes(example.language)
-      );
+    // Filter by selected languages - if none selected, show nothing
+    if (this.selectedLanguages.length === 0) {
+      this.filteredExamples = [];
+      return;
     }
+    
+    results = results.filter(example =>
+      this.selectedLanguages.includes(example.language)
+    );
 
     // Filter by selected category
     if (this.selectedCategory) {
