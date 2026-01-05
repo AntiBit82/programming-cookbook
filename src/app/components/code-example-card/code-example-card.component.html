@@ -21,7 +21,7 @@
   @if (isExpanded) {
     <mat-card-content>
       <div class="code-preview expanded">
-        @for (section of highlightedSections; track section.title; let i = $index) {
+        @for (section of highlightedSections; track $index; let i = $index) {
           <div class="code-section">
             @if (i > 0) {
               <hr class="section-separator">

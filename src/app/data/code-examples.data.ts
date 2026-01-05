@@ -129,6 +129,74 @@ def timing_decorator(func):
     ]
   },
   {
+    language: ProgrammingLanguage.Python,
+    header: 'How to implement the Registry Pattern',
+    categories: [Category.Basic],
+    sections: [
+      {
+        title: 'Registry Pattern Example',
+        body: `from functools import wraps
+from typing import Any, Callable
+
+type Data = dict[str, Any]
+type ExportFn = Callable[[Data], None]
+
+# The registry which maps format names to export functions
+exporters: dict[str, ExportFn] = {}
+
+# Our decorator to register exporters
+def register_exporter(name: str):
+    def decorator(func: ExportFn):
+        @wraps(func)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            return func(*args, **kwargs)
+        
+        exporters[name] = wrapper
+        return wrapper
+    
+    return decorator
+
+
+@register_exporter("pdf")
+def export_pdf(data: Data) -> None:
+    print(f"Exporting data to PDF: {data}")
+
+
+@register_exporter("csv")
+def export_csv(data: Data) -> None:
+    print(f"Exporting data to CSV: {data}")
+
+
+@register_exporter("json")
+def export_json(data: Data) -> None:
+    import json
+    print("Exporting data to JSON:")
+    print(json.dumps(data, indent=2))
+
+
+def export_data(data: Data, format: str) -> None:
+    exporter = exporters.get(format)
+    if exporter is None:
+        raise ValueError(f"No exporter found for format: {format}")
+    exporter(data)
+
+
+# Usage
+sample_data: Data = {"name": "Alice", "age": 30}
+export_data(sample_data, "pdf")
+export_data(sample_data, "csv")
+export_data(sample_data, "json")`,
+        output: `Exporting data to PDF: {'name': 'Alice', 'age': 30}
+Exporting data to CSV: {'name': 'Alice', 'age': 30}
+Exporting data to JSON:
+{
+  "name": "Alice",
+  "age": 30
+}`
+      }
+    ]
+  },
+  {
     language: ProgrammingLanguage.PgPLSQL,
     header: 'How to create a simple function',
     categories: [Category.Basic],

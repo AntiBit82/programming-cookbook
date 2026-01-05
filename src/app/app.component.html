@@ -70,7 +70,7 @@
 
 <div class="content-container">
   <div class="examples-grid">
-    @for (example of filteredExamples; track example.header) {
+    @for (example of filteredExamples; track example) {
       <app-code-example-card [example]="example"></app-code-example-card>
     } @empty {
       <div class="no-results">

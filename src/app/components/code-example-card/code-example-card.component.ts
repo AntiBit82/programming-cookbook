@@ -8,6 +8,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CodeExample, highlightCode } from '../../models/code-example.model';
 
+type HighlightedSection = { title: string; code: SafeHtml; output?: string };
+
 @Component({
   selector: 'app-code-example-card',
   imports: [
@@ -22,23 +24,27 @@ import { CodeExample, highlightCode } from '../../models/code-example.model';
   styleUrl: './code-example-card.component.css'
 })
 export class CodeExampleCardComponent implements OnInit {
+  
   @Input() example!: CodeExample;
   isExpanded = false;
-  highlightedSections: { title: string; code: SafeHtml; output?: string }[] = [];
+  highlightedSections: HighlightedSection[] = [];
   copyStates: { [index: number]: { icon: string; label: string } } = {};
 
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.highlightedSections = this.example.sections.map((section, index) => {
+      //console.log("Before section:", section);
       this.copyStates[index] = { icon: 'content_copy', label: 'Copy code' };
-      return {
+      const highlighted: HighlightedSection = {
         title: section.title,
         code: this.sanitizer.bypassSecurityTrustHtml(
           highlightCode(section.body, this.example.language)
         ),
         output: section.output
       };
+      //console.log("After highlighted section:", highlighted);
+      return highlighted;
     });
   }
 
