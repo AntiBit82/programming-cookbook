@@ -69,6 +69,66 @@ print(evens)  # [2, 4]`
     ]
   },
   {
+    language: ProgrammingLanguage.Python,
+    header: 'How to create and use decorators',
+    categories: [Category.Basic],
+    sections: [
+      {
+        title: 'Basic decorator',
+        body: `def my_decorator(func):
+    def wrapper():
+        print("Before function call")
+        func()
+        print("After function call")
+    return wrapper
+
+@my_decorator
+def say_hello():
+    print("Hello!")
+
+say_hello()`,
+        output: `Before function call
+Hello!
+After function call`
+      },
+      {
+        title: 'Decorator with arguments',
+        body: `def repeat(times):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for _ in range(times):
+                result = func(*args, **kwargs)
+            return result
+        return wrapper
+    return decorator
+
+@repeat(3)
+def greet(name):
+    print(f"Hello, {name}!")
+
+greet("Alice")`,
+        output: `Hello, Alice!
+Hello, Alice!
+Hello, Alice!`
+      },
+      {
+        title: 'Preserving function metadata',
+        body: `from functools import wraps
+import time
+
+def timing_decorator(func):
+    @wraps(func) # This will preserve the original function's metadata
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.2f}s")
+        return result
+    return wrapper`
+      }
+    ]
+  },
+  {
     language: ProgrammingLanguage.PgPLSQL,
     header: 'How to create a simple function',
     categories: [Category.Basic],

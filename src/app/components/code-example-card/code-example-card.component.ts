@@ -24,29 +24,30 @@ import { CodeExample, highlightCode } from '../../models/code-example.model';
 export class CodeExampleCardComponent implements OnInit {
   @Input() example!: CodeExample;
   isExpanded = false;
-  highlightedSections: { title: string; code: SafeHtml }[] = [];
-  copyButtonIcon = 'content_copy';
-  copyButtonLabel = 'Copy code';
+  highlightedSections: { title: string; code: SafeHtml; output?: string }[] = [];
+  copyStates: { [index: number]: { icon: string; label: string } } = {};
 
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-    this.highlightedSections = this.example.sections.map(section => ({
-      title: section.title,
-      code: this.sanitizer.bypassSecurityTrustHtml(
-        highlightCode(section.body, this.example.language)
-      )
-    }));
+    this.highlightedSections = this.example.sections.map((section, index) => {
+      this.copyStates[index] = { icon: 'content_copy', label: 'Copy code' };
+      return {
+        title: section.title,
+        code: this.sanitizer.bypassSecurityTrustHtml(
+          highlightCode(section.body, this.example.language)
+        ),
+        output: section.output
+      };
+    });
   }
 
-  copyToClipboard(): void {
-    const allCode = this.example.sections.map(s => s.body).join('\n\n');
-    navigator.clipboard.writeText(allCode).then(() => {
-      this.copyButtonIcon = 'check';
-      this.copyButtonLabel = 'Copied!';
+  copySectionToClipboard(index: number): void {
+    const section = this.example.sections[index];
+    navigator.clipboard.writeText(section.body).then(() => {
+      this.copyStates[index] = { icon: 'check', label: 'Copied!' };
       setTimeout(() => {
-        this.copyButtonIcon = 'content_copy';
-        this.copyButtonLabel = 'Copy code';
+        this.copyStates[index] = { icon: 'content_copy', label: 'Copy code' };
       }, 2000);
     });
   }

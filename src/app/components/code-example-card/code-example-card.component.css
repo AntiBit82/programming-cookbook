@@ -37,6 +37,12 @@ mat-card-header {
 .category-chip {
   font-size: 0.75rem;
   font-weight: 500;
+  background-color: rgb(255, 38, 197) !important;
+  color: white !important;
+}
+
+.category-chip::ng-deep .mdc-evolution-chip__text-label {
+  color: white !important;
 }
 
 .header-text {
@@ -56,7 +62,6 @@ mat-card-content {
 }
 
 .code-section {
-  margin-bottom: 16px;
   position: relative;
 }
 
@@ -64,19 +69,44 @@ mat-card-content {
   margin-bottom: 0;
 }
 
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
 .section-title {
-  margin: 0 0 8px 0;
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: #a4e72b !important;
+}
+
+.section-separator {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.output-label {
+  margin: 12px 0 4px 0;
   font-size: 0.8rem;
   font-weight: 500;
-  color: #3f51b5;
-  font-style: italic;
+  color: #666;
+}
+
+.output-block {
+  margin-top: 0;
+  background-color: black;
+  color: white;
+  border-left: 3px solid #24d542;
+  padding-left: 12px;
 }
 
 .copy-button {
-  position: absolute;
-  top: 18px;
-  right: -4px;
-  z-index: 10;
   width: 32px !important;
   height: 32px !important;
   padding: 0 !important;
