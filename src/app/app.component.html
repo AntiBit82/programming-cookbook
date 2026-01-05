@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="header-toolbar">
-  <span class="title">{{ title }}</span>
+  <span class="title">Programming<br class="title-break"> Cookbook</span>
   <span class="spacer"></span>
   <mat-form-field appearance="outline" class="language-filter">
     <mat-label>Filter by Language</mat-label>
@@ -80,5 +80,9 @@
     }
   </div>
 </div>
+
+<button mat-fab class="scroll-to-top" (click)="scrollToTop()" *ngIf="showScrollButton" aria-label="Scroll to top">
+  <mat-icon>arrow_upward</mat-icon>
+</button>
 
 <router-outlet />

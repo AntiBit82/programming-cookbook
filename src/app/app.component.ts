@@ -12,6 +12,7 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/ma
 import { CodeExampleCardComponent } from './components/code-example-card/code-example-card.component';
 import { CodeExample, ProgrammingLanguage } from './models/code-example.model';
 import { CODE_EXAMPLES } from './data/code-examples.data';
+import { ViewChildren, QueryList, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -32,14 +33,25 @@ import { CODE_EXAMPLES } from './data/code-examples.data';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Programming Cookbook';
+  @ViewChildren(CodeExampleCardComponent) cardComponents!: QueryList<CodeExampleCardComponent>;
+  
   searchTerm = '';
-  availableLanguages = Object.values(ProgrammingLanguage);
+  availableLanguages = Object.values(ProgrammingLanguage).sort();
   selectedLanguages: string[] = [...this.availableLanguages];
   categoryInput = '';
   selectedCategory = '';
   allExamples: CodeExample[] = CODE_EXAMPLES;
   filteredExamples: CodeExample[] = CODE_EXAMPLES;
+  showScrollButton = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.showScrollButton = window.pageYOffset > 300;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   get availableCategories(): string[] {
     let examples = this.allExamples;
@@ -89,6 +101,12 @@ export class AppComponent {
     this.selectedCategory = '';
     this.searchTerm = '';
     this.onFilterChange();
+    // Collapse all cards
+    setTimeout(() => {
+      this.cardComponents?.forEach(card => card.collapse());
+    }, 0);
+    // Scroll to top
+    this.scrollToTop();
   }
 
   onLanguageChange(): void {

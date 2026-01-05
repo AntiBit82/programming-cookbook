@@ -49,4 +49,8 @@ export class CodeExampleCardComponent implements OnInit {
   toggleExpand(): void {
     this.isExpanded = !this.isExpanded;
   }
+
+  collapse(): void {
+    this.isExpanded = false;
+  }
 }
