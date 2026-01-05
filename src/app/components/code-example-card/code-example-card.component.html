@@ -24,7 +24,7 @@
         <button mat-icon-button class="copy-button" (click)="copyToClipboard(); $event.stopPropagation()" [attr.aria-label]="copyButtonLabel" matTooltip="Copy code to clipboard">
           <mat-icon>{{ copyButtonIcon }}</mat-icon>
         </button>
-        <pre><code [innerHTML]="highlightedCode"></code></pre>
+        <pre class="hljs"><code [innerHTML]="highlightedCode"></code></pre>
       </div>
     </mat-card-content>
   }

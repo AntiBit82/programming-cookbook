@@ -70,7 +70,6 @@ mat-card-content {
 pre {
   margin: 0;
   padding: 12px;
-  background-color: #f5f5f5;
   border-radius: 4px;
   overflow-x: auto;
   font-size: 0.85rem;
@@ -79,7 +78,6 @@ pre {
 
 code {
   font-family: 'Courier New', Courier, monospace;
-  color: #333;
 }
 
 @media (max-width: 768px) {

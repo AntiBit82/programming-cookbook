@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { CodeExampleCardComponent } from './components/code-example-card/code-example-card.component';
-import { CodeExample, ProgrammingLanguage } from './models/code-example.model';
+import { CodeExample, ProgrammingLanguage, Category } from './models/code-example.model';
 import { ViewChildren, QueryList, HostListener } from '@angular/core';
 import { CodeExampleService } from './services/code-example.service';
 
@@ -39,7 +39,7 @@ export class AppComponent {
   availableLanguages = Object.values(ProgrammingLanguage).sort();
   selectedLanguages: string[] = [...this.availableLanguages];
   categoryInput = '';
-  selectedCategory = '';
+  selectedCategory: Category | '' = '';
   allExamples: CodeExample[] = [];
   filteredExamples: CodeExample[] = [];
   showScrollButton = false;
@@ -126,7 +126,7 @@ export class AppComponent {
   }
 
   onCategorySelected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedCategory = event.option.value;
+    this.selectedCategory = event.option.value as Category;
     this.categoryInput = event.option.value;
     this.onFilterChange();
   }
@@ -145,7 +145,7 @@ export class AppComponent {
     // Filter by selected category
     if (this.selectedCategory) {
       results = results.filter(example =>
-        example.categories.includes(this.selectedCategory)
+        example.categories.includes(this.selectedCategory as Category)
       );
     }
 

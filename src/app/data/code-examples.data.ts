@@ -1,10 +1,10 @@
-import { CodeExample, ProgrammingLanguage } from '../models/code-example.model';
+import { CodeExample, ProgrammingLanguage, Category } from '../models/code-example.model';
 
 export const CODE_EXAMPLES: CodeExample[] = [
   {
     language: ProgrammingLanguage.Java,
     header: 'How to use lambda functions',
-    categories: ['Basic'],
+    categories: [Category.Basic],
     body: `// Lambda expression for a simple operation
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 
@@ -20,7 +20,7 @@ int result = add.apply(5, 3); // result = 8`
   {
     language: ProgrammingLanguage.Python,
     header: 'How to use list comprehensions',
-    categories: ['Basic'],
+    categories: [Category.Basic],
     body: `# Basic list comprehension
 numbers = [1, 2, 3, 4, 5]
 squares = [n**2 for n in numbers]
@@ -37,7 +37,7 @@ print(matrix)  # [[1, 2, 3], [2, 4, 6], [3, 6, 9]]`
   {
     language: ProgrammingLanguage.Python,
     header: 'How to use lambda functions',
-    categories: ['Basic'],
+    categories: [Category.Basic],
     body: `# Simple lambda function
 add = lambda x, y: x + y
 result = add(5, 3)  # result = 8
@@ -54,7 +54,7 @@ print(evens)  # [2, 4]`
   {
     language: ProgrammingLanguage.PgPLSQL,
     header: 'How to create a simple function',
-    categories: ['Basic'],
+    categories: [Category.Basic],
     body: `-- Create a function to calculate total price
 CREATE OR REPLACE FUNCTION calculate_total(
     quantity INTEGER,
@@ -72,7 +72,7 @@ SELECT calculate_total(5, 19.99) AS total;
   {
     language: ProgrammingLanguage.PgPLSQL,
     header: 'How to use a loop in PL/pgSQL',
-    categories: ['Basic'],
+    categories: [Category.Basic],
     body: `-- Function with a FOR loop
 CREATE OR REPLACE FUNCTION generate_series_sum(
     start_num INTEGER,
@@ -96,7 +96,7 @@ SELECT generate_series_sum(1, 10) AS sum;
   {
     language: ProgrammingLanguage.Java,
     header: 'How to create a HashMap',
-    categories: ['Basic'],
+    categories: [Category.Basic],
     body: `// Creating and using a HashMap
 import java.util.HashMap;
 import java.util.Map;
@@ -119,7 +119,7 @@ ages.forEach((name, age) ->
   {
     language: ProgrammingLanguage.Java,
     header: 'How to create auto generated ids',
-    categories: ['Hibernate'],
+    categories: [Category.Hibernate],
     body: `// Entity with auto-generated ID
 import javax.persistence.*;
 
@@ -155,7 +155,7 @@ public class User {
   {
     language: ProgrammingLanguage.Python,
     header: 'How to create Delta tables (managed and unmanaged)',
-    categories: ['PySpark', 'Databricks'],
+    categories: [Category.PySpark, Category.Databricks],
     body: `# Create a managed Delta table
 from pyspark.sql import SparkSession
 

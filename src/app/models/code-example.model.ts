@@ -14,11 +14,18 @@ export enum ProgrammingLanguage {
   PgPLSQL = 'PgPLSQL'
 }
 
+export enum Category {
+  Basic = 'Basic',
+  Databricks = 'Databricks',
+  Hibernate = 'Hibernate',
+  PySpark = 'PySpark'
+}
+
 export interface CodeExample {
   language: ProgrammingLanguage;
   header: string;
   body: string;
-  categories: string[];
+  categories: Category[];
 }
 
 const LANGUAGE_MAP: { [key: string]: string } = {
