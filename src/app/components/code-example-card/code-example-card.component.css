@@ -104,3 +104,55 @@ mat-card-actions button {
   align-items: center;
   gap: 4px;
 }
+
+@media (max-width: 768px) {
+  .example-card {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .example-card ::ng-deep .mat-mdc-card {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  mat-card-header {
+    overflow: hidden;
+  }
+
+  pre {
+    padding: 8px;
+    font-size: 0.75rem;
+    overflow-x: auto;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+  }
+
+  code {
+    word-break: break-all;
+    max-width: 100%;
+  }
+
+  .header-text {
+    font-size: 1rem;
+    word-break: break-word;
+  }
+
+  mat-card-content {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .code-preview {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  mat-card-actions {
+    padding: 8px;
+  }
+}

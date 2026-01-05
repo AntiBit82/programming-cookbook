@@ -361,11 +361,13 @@
   }
 
   .examples-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
+    width: 100%;
   }
 
   .content-container {
-    padding: 16px;
+    padding: 8px;
+    overflow-x: hidden;
   }
 }
