@@ -308,6 +308,42 @@
   color: white !important;
 }
 
+@media (max-width: 1180px) and (min-width: 769px) {
+  .header-toolbar {
+    flex-wrap: wrap;
+    height: auto !important;
+    min-height: 64px;
+    padding-top: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .title {
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+
+  .title-break {
+    display: none;
+  }
+
+  .spacer {
+    display: none;
+  }
+
+  .language-filter,
+  .category-filter,
+  .search-field {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .reset-button {
+    flex-shrink: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .header-toolbar {
     flex-direction: column;
