@@ -312,7 +312,7 @@
   .header-toolbar {
     flex-direction: column;
     align-items: stretch !important;
-    padding: 16px;
+    padding: 12px 8px;
     height: auto !important;
     min-height: 64px;
   }
@@ -324,7 +324,8 @@
 
   .title {
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
   }
 
   .title-break {
@@ -341,14 +342,23 @@
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
 
   .language-filter ::ng-deep .mat-mdc-text-field-wrapper,
   .category-filter ::ng-deep .mat-mdc-text-field-wrapper,
   .search-field ::ng-deep .mat-mdc-text-field-wrapper {
     background-color: rgba(255, 255, 255, 0.2) !important;
+    height: 44px;
+  }
+
+  .language-filter ::ng-deep .mat-mdc-form-field-infix,
+  .category-filter ::ng-deep .mat-mdc-form-field-infix,
+  .search-field ::ng-deep .mat-mdc-form-field-infix {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    min-height: 44px;
   }
 
   .language-filter ::ng-deep .mdc-text-field--outlined .mdc-notched-outline__leading,
@@ -366,7 +376,8 @@
   .reset-button {
     width: 100%;
     margin-left: 0;
-    margin-top: 8px;
+    margin-top: 4px;
+    height: 44px;
   }
 
   .search-field {

@@ -11,8 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { CodeExampleCardComponent } from './components/code-example-card/code-example-card.component';
 import { CodeExample, ProgrammingLanguage } from './models/code-example.model';
-import { CODE_EXAMPLES } from './data/code-examples.data';
 import { ViewChildren, QueryList, HostListener } from '@angular/core';
+import { CodeExampleService } from './services/code-example.service';
 
 @Component({
   selector: 'app-root',
@@ -40,9 +40,20 @@ export class AppComponent {
   selectedLanguages: string[] = [...this.availableLanguages];
   categoryInput = '';
   selectedCategory = '';
-  allExamples: CodeExample[] = CODE_EXAMPLES;
-  filteredExamples: CodeExample[] = CODE_EXAMPLES;
+  allExamples: CodeExample[] = [];
+  filteredExamples: CodeExample[] = [];
   showScrollButton = false;
+
+  constructor(private codeExampleService: CodeExampleService) {
+    this.loadExamples();
+  }
+
+  private loadExamples(): void {
+    this.codeExampleService.getExamples().subscribe(examples => {
+      this.allExamples = examples;
+      this.filteredExamples = examples;
+    });
+  }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
