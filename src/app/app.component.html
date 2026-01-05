@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" class="header-toolbar">
   <span class="title">Programming<br class="title-break"> Cookbook</span>
   <span class="spacer"></span>
-  <mat-form-field appearance="outline" class="language-filter">
+  <mat-form-field appearance="outline" class="language-filter" [class.no-language-selected]="selectedLanguages.length === 0">
     <mat-label>Filter by Language</mat-label>
     <mat-icon matPrefix>code</mat-icon>
     <mat-select 
@@ -9,9 +9,7 @@
       (ngModelChange)="onLanguageChange()"
       multiple>
       <mat-select-trigger>
-        @if (selectedLanguages.length === 0) {
-          <span>All</span>
-        } @else if (selectedLanguages.length === availableLanguages.length) {
+        @if (selectedLanguages.length === availableLanguages.length) {
           <span>All</span>
         } @else {
           <span>{{ selectedLanguages.join(', ') }}</span>
