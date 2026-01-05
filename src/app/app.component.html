@@ -1,0 +1,84 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <span class="title">{{ title }}</span>
+  <span class="spacer"></span>
+  <mat-form-field appearance="outline" class="language-filter">
+    <mat-label>Filter by Language</mat-label>
+    <mat-select 
+      [(ngModel)]="selectedLanguages" 
+      (ngModelChange)="onLanguageChange()"
+      multiple>
+      <mat-select-trigger>
+        @if (selectedLanguages.length === 0) {
+          <span>All</span>
+        } @else if (selectedLanguages.length === availableLanguages.length) {
+          <span>All</span>
+        } @else {
+          <span>{{ selectedLanguages.join(', ') }}</span>
+        }
+      </mat-select-trigger>
+      <div class="select-actions">
+        <button mat-button (click)="selectAll(); $event.stopPropagation()">All</button>
+        <button mat-button (click)="selectNone(); $event.stopPropagation()">None</button>
+      </div>
+      @for (language of availableLanguages; track language) {
+        <mat-option [value]="language">{{ language }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="category-filter">
+    <mat-label>Filter by Category</mat-label>
+    <input 
+      matInput 
+      [(ngModel)]="categoryInput"
+      [matAutocomplete]="categoryAuto"
+      placeholder="All categories">
+    <mat-icon matSuffix>category</mat-icon>
+    @if (selectedCategory) {
+      <button 
+        mat-icon-button 
+        matSuffix 
+        (click)="clearCategory(); $event.stopPropagation()"
+        type="button"
+        aria-label="Clear">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+    <mat-autocomplete #categoryAuto="matAutocomplete" (optionSelected)="onCategorySelected($event)">
+      <mat-option [value]="''">
+        <em>All categories</em>
+      </mat-option>
+      @for (category of filteredCategories; track category) {
+        <mat-option [value]="category">
+          {{ category }}
+        </mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search examples</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input 
+      matInput 
+      [(ngModel)]="searchTerm" 
+      (ngModelChange)="onFilterChange()">
+  </mat-form-field>
+  <button mat-raised-button class="reset-button" (click)="resetAll()" aria-label="Reset all filters">
+    <mat-icon>refresh</mat-icon>
+    Reset
+  </button>
+</mat-toolbar>
+
+<div class="content-container">
+  <div class="examples-grid">
+    @for (example of filteredExamples; track example.header) {
+      <app-code-example-card [example]="example"></app-code-example-card>
+    } @empty {
+      <div class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>No examples found matching your search.</p>
+      </div>
+    }
+  </div>
+</div>
+
+<router-outlet />

@@ -1,0 +1,33 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title class="card-title">
+      <mat-chip-set aria-label="Programming language and category">
+        <mat-chip [highlighted]="true" class="language-chip">
+          {{ example.language }}
+        </mat-chip>
+        @for (category of example.categories; track category) {
+          <mat-chip class="category-chip">
+            {{ category }}
+          </mat-chip>
+        }
+      </mat-chip-set>
+      <span class="header-text">{{ example.header }}</span>
+    </mat-card-title>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div class="code-preview" [class.expanded]="isExpanded">
+      <button mat-icon-button class="copy-button" (click)="copyToClipboard()" [attr.aria-label]="copyButtonLabel" matTooltip="Copy code to clipboard">
+        <mat-icon>{{ copyButtonIcon }}</mat-icon>
+      </button>
+      <pre><code [innerHTML]="highlightedCode"></code></pre>
+    </div>
+  </mat-card-content>
+  
+  <mat-card-actions>
+    <button mat-button (click)="toggleExpand()" color="primary">
+      <mat-icon>{{ isExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+      {{ isExpanded ? 'Collapse' : 'Expand' }}
+    </button>
+  </mat-card-actions>
+</mat-card>
