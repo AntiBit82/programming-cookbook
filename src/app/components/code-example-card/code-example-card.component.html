@@ -21,10 +21,17 @@
   @if (isExpanded) {
     <mat-card-content>
       <div class="code-preview expanded">
-        <button mat-icon-button class="copy-button" (click)="copyToClipboard(); $event.stopPropagation()" [attr.aria-label]="copyButtonLabel" matTooltip="Copy code to clipboard">
-          <mat-icon>{{ copyButtonIcon }}</mat-icon>
-        </button>
-        <pre class="hljs"><code [innerHTML]="highlightedCode"></code></pre>
+        @for (section of highlightedSections; track section.title; let i = $index) {
+          <div class="code-section">
+            @if (i === 0) {
+              <button mat-icon-button class="copy-button" color="primary" disableRipple (click)="copyToClipboard(); $event.stopPropagation()" [attr.aria-label]="copyButtonLabel" matTooltip="Copy all code to clipboard">
+                <mat-icon>{{ copyButtonIcon }}</mat-icon>
+              </button>
+            }
+            <span class="section-title">{{ section.title }}</span>
+            <pre class="hljs"><code [innerHTML]="section.code"></code></pre>
+          </div>
+        }
       </div>
     </mat-card-content>
   }

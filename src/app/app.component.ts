@@ -156,7 +156,7 @@ export class AppComponent {
         const searchableText = (
           example.header +
           ' ' + example.language +
-          ' ' + example.body
+          ' ' + example.sections.map(s => s.title + ' ' + s.body).join(' ')
         ).toLowerCase();
         
         return searchWords.every(word => searchableText.includes(word));

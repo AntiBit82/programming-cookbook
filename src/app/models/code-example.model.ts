@@ -21,10 +21,15 @@ export enum Category {
   PySpark = 'PySpark'
 }
 
+export interface CodeSection {
+  title: string;
+  body: string;
+}
+
 export interface CodeExample {
   language: ProgrammingLanguage;
   header: string;
-  body: string;
+  sections: CodeSection[];
   categories: Category[];
 }
 

@@ -24,19 +24,24 @@ import { CodeExample, highlightCode } from '../../models/code-example.model';
 export class CodeExampleCardComponent implements OnInit {
   @Input() example!: CodeExample;
   isExpanded = false;
-  highlightedCode: SafeHtml = '';
+  highlightedSections: { title: string; code: SafeHtml }[] = [];
   copyButtonIcon = 'content_copy';
   copyButtonLabel = 'Copy code';
 
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-    const highlighted = highlightCode(this.example.body, this.example.language);
-    this.highlightedCode = this.sanitizer.bypassSecurityTrustHtml(highlighted);
+    this.highlightedSections = this.example.sections.map(section => ({
+      title: section.title,
+      code: this.sanitizer.bypassSecurityTrustHtml(
+        highlightCode(section.body, this.example.language)
+      )
+    }));
   }
 
   copyToClipboard(): void {
-    navigator.clipboard.writeText(this.example.body).then(() => {
+    const allCode = this.example.sections.map(s => s.body).join('\n\n');
+    navigator.clipboard.writeText(allCode).then(() => {
       this.copyButtonIcon = 'check';
       this.copyButtonLabel = 'Copied!';
       setTimeout(() => {
