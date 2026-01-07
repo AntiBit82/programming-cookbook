@@ -28,6 +28,15 @@
             }
             <div class="section-header">
               <mat-chip class="section-title">{{ section.title }}</mat-chip>
+            </div>
+            @if (section.description) {
+              <div class="section-description">
+                <mat-icon class="description-icon">info</mat-icon>
+                <span>{{ section.description }}</span>
+              </div>
+            }
+            <div class="code-header">
+              <div class="code-label">Code:</div>
               <button mat-icon-button class="copy-button" color="primary" disableRipple (click)="copySectionToClipboard(i); $event.stopPropagation()" [attr.aria-label]="copyStates[i].label" [matTooltip]="copyStates[i].label">
                 <mat-icon>{{ copyStates[i].icon }}</mat-icon>
               </button>

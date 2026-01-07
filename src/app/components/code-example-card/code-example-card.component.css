@@ -77,11 +77,45 @@ mat-card-content {
   margin-bottom: 8px;
 }
 
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.code-label {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #666;
+}
+
 .section-title {
   margin: 0;
   font-size: 0.75rem;
   font-weight: 500;
   background-color: #a4e72b !important;
+}
+
+.section-description {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.description-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #2196F3;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .section-separator {

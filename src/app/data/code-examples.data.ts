@@ -135,6 +135,7 @@ def timing_decorator(func):
     sections: [
       {
         title: 'Registry Pattern Example',
+        description: `This example demonstrates a simple implementation of the Registry Pattern in Python using decorators to register different data exporters.`,
         body: `from functools import wraps
 from typing import Any, Callable
 

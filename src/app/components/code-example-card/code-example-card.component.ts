@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CodeExample, highlightCode } from '../../models/code-example.model';
 
-type HighlightedSection = { title: string; code: SafeHtml; usage?: SafeHtml; output?: string };
+type HighlightedSection = { title: string; description?: string; code: SafeHtml; usage?: SafeHtml; output?: string };
 
 @Component({
   selector: 'app-code-example-card',
@@ -38,6 +38,7 @@ export class CodeExampleCardComponent implements OnInit {
       this.copyStates[index] = { icon: 'content_copy', label: 'Copy code' };
       const highlighted: HighlightedSection = {
         title: section.title,
+        description: section.description,
         code: this.sanitizer.bypassSecurityTrustHtml(
           highlightCode(section.body, this.example.language)
         ),
