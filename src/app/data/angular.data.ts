@@ -636,12 +636,13 @@ export class UserFormComponent {
     language: ProgrammingLanguage.Angular,
     header: 'How to use Angular Router with parameters',
     categories: [Category.Routing],
-    description: 'Angular Router enables navigation between views with support for route parameters. This example shows how to create routes, navigate with parameters, and retrieve them in components.',
+    description: 'This example shows how to create routes, navigate with parameters and retrieve them in components.',
     downloadUrl: 'angular-routing.zip',
     sections: [
       {
         title: 'Route Configuration',
         codeLabel: 'app.routes.ts',
+        description: 'Define the routes in app.routes.ts',
         hljsLanguage: 'typescript',
         body: `import { Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
@@ -658,6 +659,7 @@ import { ProductDetailComponent } from './product-detail.component';
         title: 'Main App Component with Navigation',
         codeLabel: 'app.component.ts',
         hljsLanguage: 'typescript',
+        description: 'Router Outlet will render the matched component based on the route.',
         body: `import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 
@@ -679,6 +681,7 @@ export class AppComponent {}`
         title: 'Product List with Parameter Links',
         codeLabel: 'product-list.component.ts',
         hljsLanguage: 'typescript',
+        description: 'List contains links to product details using route parameters.',
         body: `import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -712,6 +715,7 @@ export class ProductListComponent {
         title: 'Product Detail Component with Parameter',
         codeLabel: 'product-detail.component.ts',
         hljsLanguage: 'typescript',
+        description: 'Retrieve the route parameter using ActivatedRoute.',
         body: `import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
