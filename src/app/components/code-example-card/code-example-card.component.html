@@ -33,6 +33,15 @@
               </button>
             </div>
             <pre class="hljs"><code [innerHTML]="section.code"></code></pre>
+            @if (section.usage) {
+              <div class="usage-header">
+                <div class="usage-label">Usage:</div>
+                <button mat-icon-button class="copy-button" color="primary" disableRipple (click)="copyUsageToClipboard(i); $event.stopPropagation()" [attr.aria-label]="getUsageCopyState(i).label" [matTooltip]="getUsageCopyState(i).label">
+                  <mat-icon>{{ getUsageCopyState(i).icon }}</mat-icon>
+                </button>
+              </div>
+              <pre class="hljs usage-block"><code [innerHTML]="section.usage"></code></pre>
+            }
             @if (section.output) {
               <div class="output-label">Output:</div>
               <pre class="hljs output-block"><code>{{ section.output }}</code></pre>

@@ -24,6 +24,7 @@ export enum Category {
 export interface CodeSection {
   title: string;
   body: string;
+  usage?: string;
   output?: string;
 }
 

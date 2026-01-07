@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CodeExample, highlightCode } from '../../models/code-example.model';
 
-type HighlightedSection = { title: string; code: SafeHtml; output?: string };
+type HighlightedSection = { title: string; code: SafeHtml; usage?: SafeHtml; output?: string };
 
 @Component({
   selector: 'app-code-example-card',
@@ -28,7 +28,7 @@ export class CodeExampleCardComponent implements OnInit {
   @Input() example!: CodeExample;
   isExpanded = false;
   highlightedSections: HighlightedSection[] = [];
-  copyStates: { [index: number]: { icon: string; label: string } } = {};
+  copyStates: { [key: string | number]: { icon: string; label: string } } = {};
 
   constructor(private sanitizer: DomSanitizer) {}
 
@@ -41,6 +41,9 @@ export class CodeExampleCardComponent implements OnInit {
         code: this.sanitizer.bypassSecurityTrustHtml(
           highlightCode(section.body, this.example.language)
         ),
+        usage: section.usage ? this.sanitizer.bypassSecurityTrustHtml(
+          highlightCode(section.usage, this.example.language)
+        ) : undefined,
         output: section.output
       };
       //console.log("After highlighted section:", highlighted);
@@ -56,6 +59,25 @@ export class CodeExampleCardComponent implements OnInit {
         this.copyStates[index] = { icon: 'content_copy', label: 'Copy code' };
       }, 2000);
     });
+  }
+
+  copyUsageToClipboard(index: number): void {
+    const section = this.example.sections[index];
+    if (section.usage) {
+      navigator.clipboard.writeText(section.usage).then(() => {
+        // Store usage copy state separately with a unique key
+        const usageKey = `usage_${index}`;
+        this.copyStates[usageKey] = { icon: 'check', label: 'Copied!' };
+        setTimeout(() => {
+          this.copyStates[usageKey] = { icon: 'content_copy', label: 'Copy usage' };
+        }, 2000);
+      });
+    }
+  }
+
+  getUsageCopyState(index: number): { icon: string; label: string } {
+    const usageKey = `usage_${index}`;
+    return this.copyStates[usageKey] || { icon: 'content_copy', label: 'Copy usage' };
   }
 
   toggleExpand(): void {

@@ -179,10 +179,8 @@ def export_data(data: Data, format: str) -> None:
     if exporter is None:
         raise ValueError(f"No exporter found for format: {format}")
     exporter(data)
-
-
-# Usage
-sample_data: Data = {"name": "Alice", "age": 30}
+`,
+        usage: `sample_data: Data = {"name": "Alice", "age": 30}
 export_data(sample_data, "pdf")
 export_data(sample_data, "csv")
 export_data(sample_data, "json")`,
@@ -210,11 +208,8 @@ Exporting data to JSON:
 BEGIN
     RETURN quantity * price;
 END;
-$$ LANGUAGE plpgsql;`
-      },
-      {
-        title: 'Usage',
-        body: `SELECT calculate_total(5, 19.99) AS total;
+$$ LANGUAGE plpgsql;`,
+        usage: `SELECT calculate_total(5, 19.99) AS total;
 -- Result: 99.95`
       }
     ]
@@ -239,11 +234,8 @@ BEGIN
     END LOOP;
     RETURN total;
 END;
-$$ LANGUAGE plpgsql;`
-      },
-      {
-        title: 'Usage',
-        body: `SELECT generate_series_sum(1, 10) AS sum;
+$$ LANGUAGE plpgsql;`,
+        usage: `SELECT generate_series_sum(1, 10) AS sum;
 -- Result: 55`
       }
     ]
