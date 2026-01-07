@@ -636,7 +636,7 @@ export class UserFormComponent {
     header: 'How to use Angular Router with parameters',
     categories: [Category.Routing],
     description: 'Angular Router enables navigation between views with support for route parameters. This example shows how to create routes, navigate with parameters, and retrieve them in components.',
-    downloadUrl: 'angular-routing-package-zip',
+    downloadUrl: '/angular-routing-package.zip',
     sections: [
       {
         title: 'Route Configuration',

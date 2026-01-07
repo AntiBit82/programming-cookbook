@@ -18,8 +18,7 @@
         <span class="header-text">{{ example.header }}</span>
         @if (example.downloadUrl) {
           <a [href]="example.downloadUrl" download class="download-link" (click)="$event.stopPropagation()" [attr.aria-label]="'Download ' + example.header">
-            <button mat-icon-button color="primary" matTooltip="Download example">
-              <span class="download-text">DL full example</span>
+            <button mat-icon-button color="primary" matTooltip="Download full example">
               <mat-icon>download</mat-icon>
             </button>
           </a>

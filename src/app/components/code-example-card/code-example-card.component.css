@@ -69,12 +69,6 @@ mat-card-header ::ng-deep .mat-mdc-card-header-text {
   background-color: #303f9f;
 }
 
-.download-text {
-  font-size: 0.875rem;
-  font-weight: bold !important;
-  color: white;
-}
-
 .language-chip {
   font-size: 0.75rem;
   font-weight: 600;
