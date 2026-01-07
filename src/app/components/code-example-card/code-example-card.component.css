@@ -147,6 +147,7 @@ pre {
 
 code {
   font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
 }
 
 @media (max-width: 768px) {
