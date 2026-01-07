@@ -342,12 +342,12 @@
 
   .title {
     width: 100%;
-    text-align: center;
+    text-align: left;
     font-size: 1.2rem;
   }
 
   .title-break {
-    display: none;
+    display: inline;
   }
 
   .spacer {
