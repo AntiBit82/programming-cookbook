@@ -8,6 +8,7 @@ export const CODE_EXAMPLES: CodeExample[] = [
     sections: [
       {
         title: 'Lambda expression for filtering',
+        codeLabel: 'Lambda Example Code',
         body: `List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 
 // Using lambda to filter and print even numbers

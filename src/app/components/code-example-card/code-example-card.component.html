@@ -36,7 +36,7 @@
               </div>
             }
             <div class="code-header">
-              <div class="code-label">Code:</div>
+              <div class="code-label">{{ section.codeLabel || 'Code' }}:</div>
               <button mat-icon-button class="copy-button" color="primary" disableRipple (click)="copySectionToClipboard(i); $event.stopPropagation()" [attr.aria-label]="copyStates[i].label" [matTooltip]="copyStates[i].label">
                 <mat-icon>{{ copyStates[i].icon }}</mat-icon>
               </button>
