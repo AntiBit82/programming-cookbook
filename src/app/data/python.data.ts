@@ -55,19 +55,19 @@ print(evens)  # [2, 4]`
       {
         title: 'Basic decorator',
         body: `def my_decorator(func):
-    def wrapper():
+    def wrapper(*args, **kwargs):
         print("Before function call")
-        func()
+        func(*args, **kwargs)
         print("After function call")
     return wrapper
 
 @my_decorator
-def say_hello():
-    print("Hello!")
+def say_hello(name: str):
+    print(f"Hello {name}!")
 
-say_hello()`,
+say_hello("Antonio")`,
         output: `Before function call
-Hello!
+Hello Antonio!
 After function call`
       },
       {
@@ -176,12 +176,12 @@ Exporting data to JSON:
   },
   {
     language: ProgrammingLanguage.Python,
-    header: 'How to create Delta tables (managed and unmanaged)',
+    header: 'How to create & read Delta tables (managed and unmanaged)',
     categories: [Category.PySpark, Category.Databricks],
     sections: [
       {
-        title: 'Create a managed Delta table',
-        body: `from pyspark.sql import SparkSession
+        title: 'Create managed Delta table',
+        body: `from pyspark.sql import SparkSession, DataFrame
 
 spark = SparkSession.builder.appName("DeltaExample").getOrCreate()
 
@@ -191,17 +191,17 @@ columns = ["id", "name", "age"]
 df = spark.createDataFrame(data, columns)
 
 # Managed table - Spark manages both metadata and data
-df.write.format("delta").mode("overwrite").saveAsTable("managed_users")`
+[[MARK]]df.write.format("delta").mode("overwrite").saveAsTable("managed_users")[[/MARK]]`
       },
       {
-        title: 'Method 1: saveAsTable with path option',
+        title: 'Create unmanaged Delta table (Method 1: saveAsTable() with path option)',
         body: `external_path_1 = "/mnt/delta/unmanaged_users_1"
-df.write.format("delta").mode("overwrite") \\
+[[MARK]]df.write.format("delta").mode("overwrite") \\
     .option("path", external_path_1) \\
-    .saveAsTable("unmanaged_users_1")`
+    .saveAsTable("unmanaged_users_1")[[/MARK]]`
       },
       {
-        title: 'Method 2: save() then CREATE TABLE',
+        title: 'Create unmanaged Delta table (Method 2: save() with SQL CREATE TABLE)',
         body: `external_path_2 = "/mnt/delta/unmanaged_users_2"
 df.write.format("delta").mode("overwrite").save(external_path_2)
 spark.sql(f"""
@@ -210,7 +210,7 @@ spark.sql(f"""
 """)`
       },
       {
-        title: 'Method 3: Pure SQL approach',
+        title: 'Create unmanaged Delta table (Method 3: SQL CREATE TABLE AS SELECT)',
         body: `external_path_3 = "/mnt/delta/unmanaged_users_3"
 df.createOrReplaceTempView("temp_data")
 spark.sql(f"""
@@ -222,11 +222,11 @@ spark.sql(f"""
       {
         title: 'Reading from Delta tables',
         body: `# Via metastore (works for both managed and unmanaged registered tables)
-managed = spark.table("managed_users")
-unmanaged = spark.table("unmanaged_users_1")
+managed: DataFrame = spark.table("managed_users")
+unmanaged: DataFrame = spark.table("unmanaged_users_1")
 
 # Directly from path (no metastore needed)
-unmanaged_direct = spark.read.format("delta").load(external_path_1)`
+unmanaged_direct: DataFrame = spark.read.format("delta").load(external_path_1)`
       }
     ]
   }

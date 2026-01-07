@@ -91,5 +91,158 @@ public class User {
 }`
       }
     ]
+  },
+  {
+    language: ProgrammingLanguage.Java,
+    header: 'How to use ExecutorService with multiple threads',
+    categories: [Category.Multithreading],
+    description: 'Using ExecutorService to execute tasks concurrently. Results are processed in the order tasks complete, requiring manual tracking.',
+    sections: [
+      {
+        title: 'ExecutorService with 4 threads',
+        body: `import java.util.concurrent.*;
+import java.util.*;
+
+public class ExecutorServiceExample {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        List<Future<String>> futures = new ArrayList<>();
+        
+        // Submit 10 tasks
+        for (int i = 1; i <= 10; i++) {
+            final int taskId = i;
+            Future<String> future = executor.submit(() -> {
+                // Simulate work with varying duration
+                Thread.sleep((11 - taskId) * 100);
+                return "Task " + taskId + " completed";
+            });
+            futures.add(future);
+        }
+        
+        // Must wait for each future in submission order
+        for (Future<String> future : futures) {
+            String result = future.get(); // Blocks until this specific task completes
+            System.out.println(result);
+        }
+        
+        // awaitTermination() not needed - all tasks already completed via get()
+        executor.shutdown();
+    }
+}`,
+        output: `Task 1 completed
+Task 2 completed
+Task 3 completed
+Task 4 completed
+Task 5 completed
+Task 6 completed
+Task 7 completed
+Task 8 completed
+Task 9 completed
+Task 10 completed`
+      }
+    ]
+  },
+  {
+    language: ProgrammingLanguage.Java,
+    header: 'How to use ExecutorCompletionService for efficient result processing',
+    categories: [Category.Multithreading],
+    description: 'ExecutorCompletionService allows processing results as soon as any task completes, rather than waiting for tasks in submission order.',
+    sections: [
+      {
+        title: 'ExecutorCompletionService with 4 threads',
+        body: `import java.util.concurrent.*;
+
+public class CompletionServiceExample {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        ExecutorCompletionService<String> completionService = 
+            new ExecutorCompletionService<>(executor);
+        
+        // Submit 10 tasks
+        for (int i = 1; i <= 10; i++) {
+            final int taskId = i;
+            completionService.submit(() -> {
+                // Simulate work with varying duration
+                Thread.sleep((11 - taskId) * 100);
+                return "Task " + taskId + " completed";
+            });
+        }
+        
+        // Process results as they complete (not in submission order)
+        for (int i = 0; i < 10; i++) {
+            Future<String> future = completionService.take(); // Blocks until ANY task completes
+            String result = future.get();
+            System.out.println(result);
+        }
+        
+        // awaitTermination() not needed - all tasks already completed via take()
+        executor.shutdown();
+    }
+}`,
+        output: `Task 10 completed
+Task 9 completed
+Task 8 completed
+Task 7 completed
+Task 6 completed
+Task 5 completed
+Task 4 completed
+Task 3 completed
+Task 2 completed
+Task 1 completed`
+      }
+    ]
+  },
+  {
+    language: ProgrammingLanguage.Java,
+    header: 'How and when to use ExecutorService awaitTermination() with fire-and-forget tasks',
+    categories: [Category.Multithreading],
+    description: 'When tasks perform side effects without returning values (execute() instead of submit()), awaitTermination() ensures all tasks complete before shutdown.',
+    sections: [
+      {
+        title: 'Fire-and-forget tasks with awaitTermination()',
+        body: `import java.util.concurrent.*;
+
+public class AwaitTerminationExample {
+    
+    private static void logToDb(int id) {
+        try {
+            Thread.sleep(1000); // Simulate database write
+            System.out.println("Entry " + id + " saved to DB");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+    
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        
+        // Submit 1000 fire-and-forget tasks (no Future needed)
+        for (int i = 1; i <= 1000; i++) {
+            final int entryId = i;
+            executor.execute(() -> logToDb(entryId));
+        }
+        
+        // Signal no more tasks will be submitted
+        executor.shutdown();
+        System.out.println("Executor is shut down. No more tasks!");
+        
+        // Wait for all tasks to complete (crucial for fire-and-forget)
+        // Without this, program exits before all DB writes finish
+        executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+        
+        System.out.println("All 1000 entries logged to database");
+    }
+}`,
+        output: `Executor is shut down. No more tasks!
+Entry 1 saved to DB
+Entry 2 saved to DB
+Entry 3 saved to DB
+...
+Entry 998 saved to DB
+Entry 999 saved to DB
+Entry 1000 saved to DB
+All 1000 entries logged to database`
+      }
+    ]
   }
 ];

@@ -23,6 +23,7 @@ export enum Category {
   Basic = 'Basic',
   Databricks = 'Databricks',
   Hibernate = 'Hibernate',
+  Multithreading = 'Multithreading',
   PySpark = 'PySpark',
   ReactiveForms = 'Reactive Forms',
   Routing = 'Routing',
