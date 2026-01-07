@@ -11,7 +11,7 @@ hljs.registerLanguage('sql', sql);
 export enum ProgrammingLanguage {
   Python = 'Python',
   Java = 'Java',
-  PgPLSQL = 'PgPLSQL'
+  PgPLSQL = 'PL/pgSQL'
 }
 
 export enum Category {

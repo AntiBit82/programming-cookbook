@@ -102,14 +102,17 @@ export class AppComponent {
   }
 
   get availableCategories(): string[] {
+    // Return empty array when no languages selected
+    if (this.selectedLanguages.length === 0) {
+      return [];
+    }
+    
     let examples = this.allExamples;
     
-    // Filter by selected languages first
-    if (this.selectedLanguages.length > 0) {
-      examples = examples.filter(example =>
-        this.selectedLanguages.includes(example.language)
-      );
-    }
+    // Filter by selected languages
+    examples = examples.filter(example =>
+      this.selectedLanguages.includes(example.language)
+    );
     
     // Extract unique categories
     const categories = new Set<string>();
