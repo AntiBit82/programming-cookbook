@@ -404,6 +404,7 @@ export class UserEditorComponent {
     header: 'How to use FormArray for dynamic form fields',
     categories: [Category.ReactiveForms],
     description: 'FormArray allows to manage a dynamic collection of form controls, enabling users to add or remove fields at runtime. This example shows how to bind a FormArray to an existing data object.',
+    downloadUrl: 'angular-formarray.zip',
     sections: [
       {
         title: 'Component with FormArray and data binding',
@@ -636,7 +637,7 @@ export class UserFormComponent {
     header: 'How to use Angular Router with parameters',
     categories: [Category.Routing],
     description: 'Angular Router enables navigation between views with support for route parameters. This example shows how to create routes, navigate with parameters, and retrieve them in components.',
-    downloadUrl: 'angular-routing-package.zip',
+    downloadUrl: 'angular-routing.zip',
     sections: [
       {
         title: 'Route Configuration',
