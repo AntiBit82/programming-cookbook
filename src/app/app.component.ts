@@ -43,6 +43,10 @@ export class AppComponent {
   allExamples: CodeExample[] = [];
   filteredExamples: CodeExample[] = [];
   showScrollButton = false;
+  mobileFiltersVisible = false;
+  private lastScrollPosition = 0;
+  private filtersOpenedScrollPosition = 0;
+  private isTogglingFilters = false;
 
   constructor(private codeExampleService: CodeExampleService) {
     this.loadExamples();
@@ -57,7 +61,40 @@ export class AppComponent {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.showScrollButton = window.pageYOffset > 300;
+    const currentScroll = window.pageYOffset;
+    this.showScrollButton = currentScroll > 300;
+    
+    // Don't hide filters during toggle animation
+    if (this.isTogglingFilters) {
+      return;
+    }
+    
+    // Hide mobile filters when scrolling down more than 50px from when filters were opened
+    if (this.mobileFiltersVisible && window.innerWidth <= 768) {
+      if (currentScroll > this.filtersOpenedScrollPosition + 50) {
+        this.mobileFiltersVisible = false;
+      }
+    }
+    
+    this.lastScrollPosition = currentScroll;
+  }
+
+  toggleMobileFilters(): void {
+    this.mobileFiltersVisible = !this.mobileFiltersVisible;
+    
+    // Scroll to top when opening filters
+    if (this.mobileFiltersVisible) {
+      this.isTogglingFilters = true;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Wait for scroll animation and set tracking position
+      setTimeout(() => {
+        this.filtersOpenedScrollPosition = window.pageYOffset;
+        this.isTogglingFilters = false;
+      }, 600);
+    } else {
+      // Reset tracking when closing
+      this.lastScrollPosition = window.pageYOffset;
+    }
   }
 
   scrollToTop(): void {

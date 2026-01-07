@@ -1,6 +1,12 @@
 <mat-toolbar color="primary" class="header-toolbar">
-  <span class="title">Programming<br class="title-break"> Cookbook</span>
-  <span class="spacer"></span>
+  <div class="toolbar-header">
+    <button mat-icon-button class="burger-menu" (click)="toggleMobileFilters()" aria-label="Toggle filters">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="title">Programming<br class="title-break"> Cookbook</span>
+    <span class="spacer"></span>
+  </div>
+  <div class="filters-container" [class.mobile-visible]="mobileFiltersVisible">
   <mat-form-field appearance="outline" class="language-filter" [class.no-language-selected]="selectedLanguages.length === 0">
     <mat-label>Filter by Language</mat-label>
     <mat-icon matPrefix>code</mat-icon>
@@ -75,6 +81,7 @@
     <mat-icon>refresh</mat-icon>
     Reset
   </button>
+  </div>
 </mat-toolbar>
 
 <div class="content-container">
