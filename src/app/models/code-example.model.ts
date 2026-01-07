@@ -27,6 +27,7 @@ export enum Category {
   PySpark = 'PySpark',
   ReactiveForms = 'Reactive Forms',
   Routing = 'Routing',
+  RxJS = 'RxJS',
 }
 
 export interface CodeSection {

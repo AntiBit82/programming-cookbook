@@ -758,5 +758,347 @@ export class ProductDetailComponent implements OnInit {
 }`
       }
     ]
+  },
+  {
+    language: ProgrammingLanguage.Angular,
+    header: 'RxJS Basics: Creating and subscribing to Observables',
+    categories: [Category.RxJS],
+    sections: [
+      {
+        title: 'Create and subscribe to Observable',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { Component, OnInit } from '@angular/core';
+import { of } from 'rxjs';
+
+@Component({
+  selector: 'app-basic-observable',
+  template: '<p>Check console for output</p>'
+})
+export class BasicObservableComponent implements OnInit {
+  ngOnInit() {
+    // Create an Observable that emits values
+    [[MARK]]const numbers$ = of(1, 2, 3, 4, 5);[[/MARK]]
+    
+    // Subscribe to receive values
+    [[MARK]]numbers$.subscribe(value => {
+      console.log(value);
+    });[[/MARK]]
+  }
+}`,
+        output: `1
+2
+3
+4
+5`
+      },
+      {
+        title: 'Observable with error and complete',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { Observable } from 'rxjs';
+
+// Subscribe with observer object
+numbers$.subscribe({
+  [[MARK]]next: (value) => console.log('Value:', value),[[/MARK]]
+  [[MARK]]error: (err) => console.error('Error:', err),[[/MARK]]
+  [[MARK]]complete: () => console.log('Complete!')[[/MARK]]
+});`,
+        output: `Value: 1
+Value: 2
+Value: 3
+Value: 4
+Value: 5
+Complete!`
+      }
+    ]
+  },
+  {
+    language: ProgrammingLanguage.Angular,
+    header: 'RxJS: Transform data with map and filter',
+    categories: [Category.RxJS],
+    sections: [
+      {
+        title: 'Using map operator',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+const numbers$ = of(1, 2, 3, 4, 5);
+
+// Transform each value
+[[MARK]]numbers$.pipe(
+  map(x => x * 10)
+).subscribe(value => console.log(value));[[/MARK]]`,
+        output: `10
+20
+30
+40
+50`
+      },
+      {
+        title: 'Using filter operator',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { filter } from 'rxjs/operators';
+
+// Filter even numbers only
+[[MARK]]numbers$.pipe(
+  filter(x => x % 2 === 0)
+).subscribe(value => console.log(value));[[/MARK]]`,
+        output: `2
+4`
+      },
+      {
+        title: 'Combining map and filter',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `// Chain multiple operators
+[[MARK]]numbers$.pipe(
+  filter(x => x % 2 === 0),  // Keep even numbers
+  map(x => x * 10)            // Multiply by 10
+).subscribe(value => console.log(value));[[/MARK]]`,
+        output: `20
+40`
+      }
+    ]
+  },
+  {
+    language: ProgrammingLanguage.Angular,
+    header: 'RxJS: Chain observables with switchMap and mergeMap',
+    categories: [Category.RxJS],
+    sections: [
+      {
+        title: 'Using switchMap',
+        description: 'switchMap cancels previous inner observable when new value arrives. Perfect for search/autocomplete.',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { of, concat } from 'rxjs';
+import { switchMap, delay } from 'rxjs/operators';
+
+// Simulate user typing search terms quickly
+const searchTerms$ = concat(
+  of('Ang').pipe(delay(0)),
+  of('Angul').pipe(delay(100)),
+  of('Angular').pipe(delay(100))
+);
+
+// Use output of one observable as input to another
+[[MARK]]searchTerms$.pipe(
+  switchMap(term => {
+    console.log(\`Searching for: \${term}\`);
+    // Simulate API call that takes 150ms
+    return this.http.get(\`/api/search?q=\${term}\`).pipe(delay(150));
+  })
+).subscribe(results => console.log('Results:', results));[[/MARK]]`,
+        output: `Searching for: Ang      # at 0ms
+Searching for: Angul    # at 100ms (cancels "Ang" request)
+Searching for: Angular  # at 200ms (cancels "Angul" request)
+Results: [Angular results]  # at 350ms (only last search completes)
+
+// First two requests were cancelled!
+// Only "Angular" request completed and returned results`
+      },
+      {
+        title: 'Using mergeMap',
+        description: 'mergeMap keeps all inner observables running. Good for parallel requests.',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+
+const userIds$ = of(1, 2, 3);
+
+// Get user details for each ID in parallel
+[[MARK]]userIds$.pipe(
+  mergeMap(id => this.http.get(\`/api/users/\${id}\`))
+).subscribe(user => console.log(user));[[/MARK]]
+
+// All 3 HTTP requests run simultaneously`
+      },
+      {
+        title: 'switchMap vs mergeMap example',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { fromEvent } from 'rxjs';
+import { switchMap, mergeMap } from 'rxjs/operators';
+
+const button = document.querySelector('button');
+const clicks$ = fromEvent(button, 'click');
+
+// switchMap: Only latest click's request is kept
+clicks$.pipe(
+  [[MARK]]switchMap(() => this.http.get('/api/data'))[[/MARK]]
+).subscribe(data => console.log(data));
+
+// mergeMap: All clicks create requests
+clicks$.pipe(
+  [[MARK]]mergeMap(() => this.http.get('/api/data'))[[/MARK]]
+).subscribe(data => console.log(data));`
+      }
+    ]
+  },
+  {
+    language: ProgrammingLanguage.Angular,
+    header: 'RxJS: Merge multiple observables',
+    categories: [Category.RxJS],
+    sections: [
+      {
+        title: 'Using merge operator',
+        description: 'Combines multiple observables into one, emitting values as they arrive.',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { merge, interval } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+
+const first$ = interval(1000).pipe(map(x => \`o1: \${x}\`), take(3));
+const second$ = interval(1500).pipe(map(x => \`o2: \${x}\`), take(3));
+
+// Emit from either observable as values arrive
+[[MARK]]merge(first$, second$).subscribe(value => console.log(value));[[/MARK]]`,
+        output: `o1: 0 # after 1s
+o2: 0 # after 1.5s
+o1: 1 # after 2s
+o1: 2 # after 3s
+o2: 1 # after 3s
+o2: 2 # after 4.5s`
+      },
+      {
+        title: 'Using concat operator',
+        description: 'Subscribes to observables sequentially - waits for each to complete before starting the next. Order is guaranteed.',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { concat, interval } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+
+const first$ = interval(1000).pipe(map(x => \`o1: \${x}\`), take(3));
+const second$ = interval(500).pipe(map(x => \`o2: \${x}\`), take(3));
+
+// Subscribe to each observable in order, one at a time
+[[MARK]]concat(first$, second$).subscribe(value => console.log(value));[[/MARK]]
+
+// first$ must complete before second$ starts`,
+        output: `o1: 0 # at 1s
+o1: 1 # at 2s
+o1: 2 # at 3s (first$ completes, now second$ starts)
+o2: 0 # at 3.5s (500ms after second$ started)
+o2: 1 # at 4s
+o2: 2 # at 4.5s
+
+Total time: 4.5s (3s + 1.5s sequential)
+vs merge: would complete in 3s (parallel)`
+      },
+      {
+        title: 'Using combineLatest',
+        description: 'Waits for all observables to emit at least once, then emits array of latest values whenever any observable emits.',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { combineLatest, of, concat } from 'rxjs';
+import { delay } from 'rxjs/operators';
+
+const name$ = of('John').pipe(delay(100));
+const age$ = [[MARK]]concat(
+  of(30).pipe(delay(200)),
+  of(31).pipe(delay(300))
+);[[/MARK]]
+const city$ = of('NYC').pipe(delay(300));
+
+// Combine latest values from all observables
+[[MARK]]combineLatest([name$, age$, city$]).subscribe(
+  ([name, age, city]) => {
+    console.log(\`\${name}, \${age}, \${city}\`);
+  }
+);[[/MARK]]`,
+        output: `John, 30, NYC  # at 300ms when all have emitted
+John, 31, NYC  # at 500ms when age updates again`
+      },
+      {
+        title: 'Using forkJoin',
+        description: 'Waits for ALL observables to complete, then emits ONCE with the last value from each. Like Promise.all().',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { forkJoin } from 'rxjs';
+
+const user$ = this.http.get('/api/user/1');
+const posts$ = this.http.get('/api/posts');
+const comments$ = this.http.get('/api/comments');
+
+// Wait for all HTTP requests to complete
+[[MARK]]forkJoin({
+  user: user$,
+  posts: posts$,
+  comments: comments$
+}).subscribe(({ user, posts, comments }) => {
+  console.log('All data loaded:', user, posts, comments);
+});[[/MARK]]`,
+        output: `All data loaded: {...}, [...], [...]  # Only emits ONCE when all complete`
+      },
+      {
+        title: 'combineLatest vs forkJoin comparison',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { combineLatest, forkJoin, of, concat } from 'rxjs';
+import { delay } from 'rxjs/operators';
+
+const a$ = concat(of(1).pipe(delay(100)), of(2).pipe(delay(100)));
+const b$ = of('x').pipe(delay(150));
+
+// combineLatest: Emits EVERY time any observable emits
+[[MARK]]combineLatest([a$, b$]).subscribe(
+  ([a, b]) => console.log('combineLatest:', a, b)
+);[[/MARK]]
+// Output:
+// combineLatest: 1, x  # at 150ms (both have emitted)
+// combineLatest: 2, x  # at 200ms (a$ emits again)
+
+// forkJoin: Emits ONCE when all complete
+[[MARK]]forkJoin([a$, b$]).subscribe(
+  ([a, b]) => console.log('forkJoin:', a, b)
+);[[/MARK]]
+// Output:
+// forkJoin: 2, x  # at 200ms (both completed, last values only)`,
+        output: `combineLatest: 1, x  # First emission
+combineLatest: 2, x  # Second emission (a$ changed)
+
+forkJoin: 2, x       # Single emission with final values`
+      }
+    ]
+  },
+  {
+    language: ProgrammingLanguage.Angular,
+    header: 'RxJS: Error handling',
+    categories: [Category.RxJS],
+    sections: [
+      {
+        title: 'Using catchError',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+this.http.get('/api/data').pipe(
+  [[MARK]]catchError(error => {
+    console.error('Error occurred:', error);
+    // Return a fallback value
+    return of({ data: [] });
+  })[[/MARK]]
+).subscribe(data => console.log(data));`
+      },
+      {
+        title: 'Retry on error',
+        codeLabel: 'TypeScript',
+        hljsLanguage: 'typescript',
+        body: `import { retry, catchError } from 'rxjs/operators';
+
+this.http.get('/api/data').pipe(
+  [[MARK]]retry(3),[[/MARK]]  // Retry up to 3 times
+  catchError(error => {
+    console.error('Failed after 3 retries');
+    return of(null);
+  })
+).subscribe(data => console.log(data));`
+      }
+    ]
   }
 ];
