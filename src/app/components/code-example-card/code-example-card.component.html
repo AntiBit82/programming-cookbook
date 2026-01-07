@@ -1,6 +1,6 @@
-<mat-card class="example-card" (click)="toggleExpand()">
+<mat-card class="example-card" (click)="toggleExpand($event)">
   <mat-card-header>
-    <button mat-icon-button class="expand-button" (click)="toggleExpand(); $event.stopPropagation()" color="primary" [attr.aria-label]="isExpanded ? 'Collapse' : 'Expand'">
+    <button mat-icon-button class="expand-button" (click)="toggleExpand($event); $event.stopPropagation()" color="primary" [attr.aria-label]="isExpanded ? 'Collapse' : 'Expand'">
       <mat-icon>{{ isExpanded ? 'expand_less' : 'expand_more' }}</mat-icon>
     </button>
     <mat-card-title class="card-title">
@@ -14,12 +14,28 @@
           </mat-chip>
         }
       </mat-chip-set>
-      <span class="header-text">{{ example.header }}</span>
+      <div class="header-row">
+        <span class="header-text">{{ example.header }}</span>
+        @if (example.downloadUrl) {
+          <a [href]="example.downloadUrl" download class="download-link" (click)="$event.stopPropagation()" [attr.aria-label]="'Download ' + example.header">
+            <button mat-icon-button color="primary" matTooltip="Download example">
+              <span class="download-text">DL full example</span>
+              <mat-icon>download</mat-icon>
+            </button>
+          </a>
+        }
+      </div>
     </mat-card-title>
   </mat-card-header>
   
   @if (isExpanded) {
     <mat-card-content>
+      @if (example.description) {
+        <div class="example-description">
+          <mat-icon class="description-icon">info</mat-icon>
+          <span>{{ example.description }}</span>
+        </div>
+      }
       <div class="code-preview expanded">
         @for (section of highlightedSections; track $index; let i = $index) {
           <div class="code-section">
