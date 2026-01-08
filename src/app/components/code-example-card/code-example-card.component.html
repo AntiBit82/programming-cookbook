@@ -35,9 +35,21 @@
           <span>{{ example.description }}</span>
         </div>
       }
+      @if (example.sections.length > 1) {
+        <div class="table-of-contents">
+          <div class="toc-title">Sections:</div>
+          <div class="toc-links">
+            @for (section of highlightedSections; track $index; let i = $index) {
+              <a class="toc-link" (click)="scrollToSection(i); $event.stopPropagation()" [attr.aria-label]="'Jump to ' + section.title">
+                {{ i + 1 }}. {{ section.title }}
+              </a>
+            }
+          </div>
+        </div>
+      }
       <div class="code-preview expanded">
         @for (section of highlightedSections; track $index; let i = $index) {
-          <div class="code-section">
+          <div class="code-section" [id]="getSectionId(i)">
             @if (i > 0) {
               <hr class="section-separator">
             }

@@ -3,52 +3,6 @@ import { CodeExample, ProgrammingLanguage, Category } from '../models/code-examp
 export const PYTHON_EXAMPLES: CodeExample[] = [
   {
     language: ProgrammingLanguage.Python,
-    header: 'How to use list comprehensions',
-    categories: [Category.Basic],
-    sections: [
-      {
-        title: 'Basic list comprehension',
-        body: `numbers = [1, 2, 3, 4, 5]
-squares = [n**2 for n in numbers]
-print(squares)  # [1, 4, 9, 16, 25]`
-      },
-      {
-        title: 'List comprehension with condition',
-        body: `even_squares = [n**2 for n in numbers if n % 2 == 0]
-print(even_squares)  # [4, 16]`
-      },
-      {
-        title: 'Nested list comprehension',
-        body: `matrix = [[i*j for j in range(1, 4)] for i in range(1, 4)]
-print(matrix)  # [[1, 2, 3], [2, 4, 6], [3, 6, 9]]`
-      }
-    ]
-  },
-  {
-    language: ProgrammingLanguage.Python,
-    header: 'How to use lambda functions',
-    categories: [Category.Basic],
-    sections: [
-      {
-        title: 'Simple lambda function',
-        body: `add = lambda x, y: x + y
-result = add(5, 3)  # result = 8`
-      },
-      {
-        title: 'Lambda with map',
-        body: `numbers = [1, 2, 3, 4, 5]
-doubled = list(map(lambda x: x * 2, numbers))
-print(doubled)  # [2, 4, 6, 8, 10]`
-      },
-      {
-        title: 'Lambda with filter',
-        body: `evens = list(filter(lambda x: x % 2 == 0, numbers))
-print(evens)  # [2, 4]`
-      }
-    ]
-  },
-  {
-    language: ProgrammingLanguage.Python,
     header: 'How to create and use decorators',
     categories: [Category.Basic],
     sections: [

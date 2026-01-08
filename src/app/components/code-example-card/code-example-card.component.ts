@@ -104,6 +104,19 @@ export class CodeExampleCardComponent implements OnInit {
     return this.copyStates[usageKey] || { icon: 'content_copy', label: 'Copy usage' };
   }
 
+  getSectionId(index: number): string {
+    // Create unique ID using example header and section index
+    const safeHeader = this.example.header.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    return `${safeHeader}-section-${index}`;
+  }
+
+  scrollToSection(index: number): void {
+    const element = document.getElementById(this.getSectionId(index));
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   toggleExpand(event?: MouseEvent): void {
     // Don't toggle if click happened inside code or usage block
     if (event) {
