@@ -144,261 +144,322 @@ Invoice ID: 3
     description: 'Different types of relationships between entities in Hibernate/JPA with bidirectional mappings.',
     sections: [
       {
-        title: 'One-to-One (1:1) - User and Profile',
+        title: 'One-to-One (1:1) - Post and PostDetails',
         codeLabel: 'Java Entities',
         hljsLanguage: 'java',
         body: `import javax.persistence.*;
 
 @Entity
-public class User {
+@Table(name = "post")
+public class Post {
     @Id
     @GeneratedValue
     private Long id;
     
+    private String title;
+    
     // Inverse side (mappedBy)
-    // Cascade ALL: saving User saves Profile, deleting User deletes Profile
-    // Cascade can be specified on either side/entity
-    [[MARK]]@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)[[/MARK]]
-    private Profile profile;
+    // ALWAYS use LAZY fetch (default EAGER is bad for performance)
+    // optional=false: Avoids N+1 query - tells Hibernate child (PostDetails) always exists
+    [[MARK]]@OneToOne(
+        mappedBy = "post",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY,
+        optional = false
+    )[[/MARK]]
+    private PostDetails details;
     
-    public Profile getProfile() {
-        return profile;
+    public PostDetails getDetails() {
+        return details;
     }
     
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-        if (profile != null && profile.getUser() != this) {
-            profile.setUser(this);
+    // Synchronizes BOTH sides: handles add, remove, and replace
+    public void setDetails(PostDetails details) {
+        if (details == null) {
+            if (this.details != null) {
+                this.details.setPost(null);
+            }
+        } else {
+            details.setPost(this);
         }
-    }
-    
-    public void removeProfile() {
-        if (profile != null) {
-            profile.setUser(null);
-            this.profile = null;
-        }
+        this.details = details;
     }
 }
 
 @Entity
-public class Profile {
+@Table(name = "post_details")
+public class PostDetails {
     @Id
-    @GeneratedValue
     private Long id;
     
-    // Owning side (has JoinColumn)
-    [[MARK]]@OneToOne
-    @JoinColumn(name = "user_id")[[/MARK]]
-    private User user;
+    @Column(name = "created_on")
+    private Date createdOn;
     
-    public User getUser() {
-        return user;
+    @Column(name = "created_by")
+    private String createdBy;
+    
+    // Owning side with @MapsId
+    // Child shares parent's Primary Key (id = post_id)
+    [[MARK]]@OneToOne(fetch = FetchType.LAZY)
+    @MapsId[[/MARK]]
+    private Post post;
+    
+    public Post getPost() {
+        return post;
     }
     
-    public void setUser(User user) {
-        this.user = user;
-        if (user != null && user.getProfile() != this) {
-            user.setProfile(this);
-        }
-    }
-    
-    public void removeUser() {
-        if (user != null) {
-            user.setProfile(null);
-            this.user = null;
-        }
+    void setPost(Post post) {
+        this.post = post;
     }
 }`,
         output: `// Database structure:
-// USER table: id
-// PROFILE table: id, user_id (FK)
+// POST table: id, title
+// POST_DETAILS table: id (PK + FK to post.id), created_on, created_by
 
-// One User has exactly one Profile
-// One Profile belongs to exactly one User
+// @MapsId: PostDetails shares Post's Primary Key (no separate FK column)
+// orphanRemoval=true: Deleting details from Post also deletes PostDetails entity
+// optional=false: Performance optimization - avoids N+1 query issue
 
-User user = new User();
-Profile profile = new Profile();
-profile.setUser(user);  // Sets both sides of relationship
+Post post = new Post();
+post.setTitle("High-Performance Java Persistence");
 
-// Saves both entities (cascade)
-session.save(user);`
+PostDetails details = new PostDetails();
+details.setCreatedBy("Antonio");
+
+post.setDetails(details);  // Synchronizes both sides
+
+session.persist(post);     // Cascades to PostDetails
+
+// To remove the details:
+// post.setDetails(null); // orphanRemoval deletes PostDetails`
       },
       {
-        title: 'One-to-Many (1:N) - Department and Employees',
+        title: 'One-to-Many (1:N) - Post and Comments',
         codeLabel: 'Java Entities',
         hljsLanguage: 'java',
         body: `import javax.persistence.*;
 import java.util.*;
 
 @Entity
-public class Department {
+@Table(name = "post")
+public class Post {
     @Id
     @GeneratedValue
     private Long id;
     
+    private String title;
+    
     // Inverse side (mappedBy)
-    // Cascade ALL: saving Department saves Employees, deleting Department deletes Employees
-    [[MARK]]@OneToMany(mappedBy = "department", cascade = CascadeType.ALL)[[/MARK]]
-    private List<Employee> employees = new ArrayList<>();
+    // orphanRemoval: Removing comment from collection deletes it from DB
+    [[MARK]]@OneToMany(
+        mappedBy = "post",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )[[/MARK]]
+    private List<PostComment> comments = new ArrayList<>();
     
-    public List<Employee> getEmployees() {
-        return employees;
+    public List<PostComment> getComments() {
+        return comments;
     }
     
-    public void addEmployee(Employee employee) {
-        employees.add(employee);
-        if (employee.getDepartment() != this) {
-            employee.setDepartment(this);
-        }
+    // Helper method: ALWAYS synchronize both sides
+    public void addComment(PostComment comment) {
+        comments.add(comment);
+        comment.setPost(this);
     }
     
-    public void removeEmployee(Employee employee) {
-        employees.remove(employee);
-        employee.setDepartment(null);
+    // Helper method: ALWAYS synchronize both sides
+    public void removeComment(PostComment comment) {
+        comments.remove(comment);
+        comment.setPost(null);
     }
 }
 
 @Entity
-public class Employee {
+@Table(name = "post_comment")
+public class PostComment {
     @Id
     @GeneratedValue
     private Long id;
     
+    private String review;
+    
     // Owning side (has JoinColumn)
-    [[MARK]]@ManyToOne
-    @JoinColumn(name = "department_id")[[/MARK]]
-    private Department department;
+    // ALWAYS use LAZY (default EAGER is bad for performance)
+    [[MARK]]@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")[[/MARK]]
+    private Post post;
     
-    public Department getDepartment() {
-        return department;
+    public Post getPost() {
+        return post;
     }
     
-    public void setDepartment(Department department) {
-        this.department = department;
-        if (department != null && !department.getEmployees().contains(this)) {
-            department.getEmployees().add(this);
-        }
+    void setPost(Post post) {
+        this.post = post;
     }
     
-    public void removeDepartment() {
-        if (department != null) {
-            department.getEmployees().remove(this);
-            this.department = null;
-        }
+    // Implement equals/hashCode for collection operations
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PostComment)) return false;
+        PostComment that = (PostComment) o;
+        return Objects.equals(id, that.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }`,
         output: `// Database structure:
-// DEPARTMENT table: id
-// EMPLOYEE table: id, department_id (FK)
+// POST table: id, title
+// POST_COMMENT table: id, review, post_id (FK)
 
-// One Department has many Employees
-// Many Employees belong to one Department
+// Why helper methods? Without synchronized helpers:
+// - Domain model inconsistency (one side has ref, other doesn't)
+// - Entity state transitions not guaranteed
+// - Hard-to-debug issues
 
-Department dept = new Department();
-Employee emp1 = new Employee();
-Employee emp2 = new Employee();
+Post post = new Post();
+post.setTitle("JPA Best Practices");
 
-dept.addEmployee(emp1);  // Sets both sides of relationship
-dept.addEmployee(emp2);
+PostComment comment1 = new PostComment();
+comment1.setReview("Great article!");
 
-// Saves all entities (cascade)
-session.save(dept);`
+PostComment comment2 = new PostComment();
+comment2.setReview("Very helpful");
+
+post.addComment(comment1);  // Synchronizes both sides
+post.addComment(comment2);
+
+session.persist(post);      // Cascades to comments
+
+// To remove a comment:
+// post.removeComment(comment1); // orphanRemoval deletes from DB`
       },
       {
-        title: 'Many-to-Many (N:M) - Student and Course',
+        title: 'Many-to-Many (N:M) - Post and Tag',
         codeLabel: 'Java Entities',
         hljsLanguage: 'java',
         body: `import javax.persistence.*;
+import org.hibernate.annotations.NaturalId;
 import java.util.*;
 
 @Entity
-public class Student {
+@Table(name = "post")
+public class Post {
     @Id
     @GeneratedValue
     private Long id;
+    
+    private String title;
     
     // Owning side (has JoinTable)
-    [[MARK]]// Owning side is responsible for persisting the relationship to the join table[[/MARK]]
-    // Saving Student creates STUDENT_COURSE entries; saving Course alone does not
-    // Note: Usually NO cascade for N:M (entities should be independent)
-    // cascade = PERSIST/MERGE only if you want to save new Courses when saving Student
-    [[MARK]]@ManyToMany
+    // Use Set, not List (prevents duplicates, matches join table constraint)
+    // Only PERSIST/MERGE cascade (no REMOVE - tags are shared entities)
+    [[MARK]]@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-        name = "student_course",
-        joinColumns = @JoinColumn(name = "student_id"),
-        inverseJoinColumns = @JoinColumn(name = "course_id")
+        name = "post_tag",
+        joinColumns = @JoinColumn(name = "post_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
     )[[/MARK]]
-    private Set<Course> courses = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
     
-    public Set<Course> getCourses() {
-        return courses;
+    public Set<Tag> getTags() {
+        return tags;
     }
     
-    public void addCourse(Course course) {
-        courses.add(course);
-        if (!course.getStudents().contains(this)) {
-            course.getStudents().add(this);
-        }
+    // Helper: synchronizes both sides
+    public void addTag(Tag tag) {
+        tags.add(tag);
+        tag.getPosts().add(this);
     }
     
-    public void removeCourse(Course course) {
-        courses.remove(course);
-        course.getStudents().remove(this);
+    // Helper: synchronizes both sides
+    public void removeTag(Tag tag) {
+        tags.remove(tag);
+        tag.getPosts().remove(this);
+    }
+    
+    // Implement equals/hashCode for Set operations
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Post)) return false;
+        Post post = (Post) o;
+        return Objects.equals(id, post.id);
+    }
+    
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
 
 @Entity
-public class Course {
+@Table(name = "tag")
+public class Tag {
     @Id
     @GeneratedValue
     private Long id;
     
+    // Natural business key (unique tag name)
+    @NaturalId
+    private String name;
+    
     // Inverse side (mappedBy)
-    [[MARK]]@ManyToMany(mappedBy = "courses")[[/MARK]]
-    private Set<Student> students = new HashSet<>();
+    [[MARK]]@ManyToMany(mappedBy = "tags")[[/MARK]]
+    private Set<Post> posts = new HashSet<>();
     
-    public Set<Student> getStudents() {
-        return students;
+    public Set<Post> getPosts() {
+        return posts;
     }
     
-    public void addStudent(Student student) {
-        students.add(student);
-        if (!student.getCourses().contains(this)) {
-            student.getCourses().add(this);
-        }
+    // Use business key for equals/hashCode (safer than id)
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(name, tag.name);
     }
     
-    public void removeStudent(Student student) {
-        students.remove(student);
-        student.getCourses().remove(this);
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }`,
         output: `// Database structure:
-// STUDENT table: id
-// COURSE table: id
-// STUDENT_COURSE table: student_id (FK), course_id (FK)
+// POST table: id, title
+// TAG table: id, name (unique)
+// POST_TAG table: post_id (FK), tag_id (FK) - composite PK
 
-// Many Students can enroll in many Courses
-// Many Courses can have many Students
+// Why Set instead of List? 
+// - Prevents duplicate tags on same post
+// - Matches join table constraint (post_id, tag_id) unique
+// - Better remove() performance with equals/hashCode
 
-// Without cascade: only relationship entries in join table are managed
-// Deleting a Student entity deletes STUDENT_COURSE entries, not COURSE entities
-// Deleting a Course entity deletes COURSE row (Hibernate removes STUDENT_COURSE entries first)
+// Why only PERSIST/MERGE cascade (no REMOVE)?
+// - Tags are shared across many posts
+// - Deleting a post shouldn't delete tags used by other posts
 
-Student student1 = new Student();
-Student student2 = new Student();
-Course math = new Course();
-Course physics = new Course();
+Post post1 = new Post("JPA with Hibernate");
+Post post2 = new Post("Native Hibernate");
 
-student1.addCourse(math);    // Sets both sides of relationship
-student1.addCourse(physics);
-student2.addCourse(math);
+Tag java = new Tag("Java");
+Tag hibernate = new Tag("Hibernate");
 
-// Without cascade: must save everything explicitly
-session.save(math);          // Save Course entities first
-session.save(physics);
-session.save(student1);      // Then save Students (creates join table entries)
-session.save(student2);`
+post1.addTag(java);       // Synchronizes both sides
+post1.addTag(hibernate);
+post2.addTag(java);       // Same tag on multiple posts
+
+session.persist(post1);   // Cascade persists new tags
+session.persist(post2);   // Reuses existing java tag
+
+// To dissociate:
+// post1.removeTag(java); // Removes only POST_TAG entry, not Tag entity`
       }
     ]
   },

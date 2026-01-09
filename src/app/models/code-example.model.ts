@@ -16,6 +16,7 @@ export enum ProgrammingLanguage {
   Angular = 'Angular',
   Java = 'Java',
   PgPLSQL = 'PL/pgSQL',
+  PostgreSQL = 'PostgreSQL',
   Python = 'Python'
 }
 
