@@ -63,6 +63,258 @@ def timing_decorator(func):
   },
   {
     language: ProgrammingLanguage.Python,
+    header: 'How to use some of the most important __xxx__ (dunder) methods',
+    categories: [Category.Basic],
+    sections: [
+      {
+        title: '__init__ - Object initialization',
+        description: 'Consructor, called when creating a new instance of a class, used to initialize object attributes',
+        body: `class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+person = Person("Alice", 30)
+print(f"{person.name}, {person.age}")`,
+        output: `Alice, 30`
+      },
+      {
+        title: '__str__ - String representation for users',
+        description: 'Returns a user-friendly string representation, called by print() and str()',
+        body: `class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def __str__(self):
+        return f"Person: {self.name}, Age: {self.age}"
+
+person = Person("Bob", 25)
+print(person)
+print(str(person))`,
+        output: `Person: Bob, Age: 25
+Person: Bob, Age: 25`
+      },
+      {
+        title: '__repr__ - String representation for developers',
+        description: 'Returns an unambiguous string representation for debugging, ideally valid Python code to recreate the object. Without __str__, print() falls back to __repr__(). Containers always use __repr__ for their items',
+        body: `class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def __repr__(self):
+        return f"Person(name='{self.name}', age={self.age})"
+
+person = Person("Charlie", 35)
+print(repr(person))
+print([person])  # Lists always use __repr__ for items`,
+        output: `Person(name='Charlie', age=35)
+[Person(name='Charlie', age=35)]`
+      },
+      {
+        title: '__len__ - Length of an object',
+        description: 'Called by len() function to return the number of items in an object',
+        body: `class Playlist:
+    def __init__(self, songs):
+        self.songs = songs
+    
+    def __len__(self):
+        return len(self.songs)
+
+playlist = Playlist(["Song1", "Song2", "Song3"])
+print(len(playlist))`,
+        output: `3`
+      },
+      {
+        title: '__getitem__ - Access items by index or key',
+        description: 'Enables bracket notation access (obj[key]). Python\'s fallback iteration protocol allows "for x in obj" without __iter__ by calling __getitem__(0, 1, 2...) until IndexError',
+        body: `class Playlist:
+    def __init__(self, songs):
+        self.songs = songs
+    
+    def __getitem__(self, index):
+        return self.songs[index]
+
+playlist = Playlist(["Rock", "Jazz", "Pop"])
+print(playlist[0])
+print(playlist[1])
+
+# Also works with for loop without __iter__
+for song in playlist:
+    print(song)`,
+        output: `Rock
+Jazz
+Rock
+Jazz
+Pop`
+      },
+      {
+        title: '__setitem__ - Set items by index or key',
+        description: 'Enables assignment using bracket notation (obj[key] = value)',
+        body: `class Playlist:
+    def __init__(self, songs):
+        self.songs = songs
+    
+    def __setitem__(self, index, value):
+        self.songs[index] = value
+
+playlist = Playlist(["Rock", "Jazz", "Pop"])
+playlist[1] = "Classical"
+print(playlist.songs)`,
+        output: `['Rock', 'Classical', 'Pop']`
+      },
+      {
+        title: '__call__ - Make object callable like a function',
+        description: 'Allows an instance to be called like a function using parentheses',
+        body: `class Multiplier:
+    def __init__(self, factor):
+        self.factor = factor
+    
+    def __call__(self, x):
+        return x * self.factor
+
+multiply_by_3 = Multiplier(3)
+print(multiply_by_3(5))
+print(multiply_by_3(10))`,
+        output: `15
+30`
+      },
+      {
+        title: '__eq__ - Equality comparison',
+        description: 'Without __eq__, Python uses identity comparison (is). So p1 == p2 would be False (different objects in memory). With __eq__, we define equality based on values',
+        body: `class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+p1 = Point(1, 2)
+p2 = Point(1, 2)
+p3 = Point(3, 4)
+print(p1 == p2)
+print(p1 == p3)`,
+        output: `True
+False`
+      },
+      {
+        title: '__lt__, __le__, __gt__, __ge__ - Comparison operators',
+        description: 'Define less than (<), less than or equal (<=), greater than (>), and greater than or equal (>=) comparisons',
+        body: `class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def __lt__(self, other):
+        return self.age < other.age
+    
+    def __le__(self, other):
+        return self.age <= other.age
+    
+    def __gt__(self, other):
+        return self.age > other.age
+    
+    def __ge__(self, other):
+        return self.age >= other.age
+
+alice = Person("Alice", 30)
+bob = Person("Bob", 25)
+print(alice > bob)
+print(bob < alice)`,
+        output: `True
+True`
+      },
+      {
+        title: '__add__, __sub__, __mul__, __truediv__ - Arithmetic operators',
+        description: 'Defines behavior for the + operator, or -, *, / operators respectively. Python doesn\'t enforce return type - you can return anything, but best practice is to return the same type for predictability and to allow chaining (e.g., v1 + v2 + v3)',
+        body: `class Vector:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def __add__(self, other):
+        return Vector(self.x + other.x, self.y + other.y)
+    
+    def __repr__(self):
+        return f"Vector(x={self.x}, y={self.y})"
+
+v1 = Vector(1, 2)
+v2 = Vector(3, 4)
+v3 = v1 + v2
+print(v3)`,
+        output: `Vector(x=4, y=6)`
+      },
+      {
+        title: '__enter__ and __exit__ - Context manager',
+        description: 'Implements the context manager protocol for use with "with" statements, ensuring proper resource cleanup',
+        body: `class FileManager:
+    def __init__(self, filename, mode):
+        self.filename = filename
+        self.mode = mode
+        self.file = None
+    
+    def __enter__(self):
+        self.file = open(self.filename, self.mode)
+        return self.file
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.file:
+            self.file.close()
+
+# Usage
+with FileManager('test.txt', 'w') as f:
+    f.write('Hello, World!')
+print("File closed automatically")`,
+        output: `File closed automatically`
+      },
+      {
+        title: '__iter__ and __next__ - Make object iterable',
+        description: 'Implements the iterator protocol, allowing objects to be used in for loops',
+        body: `class Counter:
+    def __init__(self, max_value):
+        self.max_value = max_value
+        self.current = 0
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.current < self.max_value:
+            self.current += 1
+            return self.current
+        raise StopIteration
+
+counter = Counter(3)
+for num in counter:
+    print(num)`,
+        output: `1
+2
+3`
+      },
+      {
+        title: '__getattr__ - Dynamic attribute access',
+        description: 'Called when an attribute is not found through normal lookup, allows dynamic attribute handling',
+        body: `class DynamicObject:
+    def __init__(self):
+        self.existing = "I exist"
+    
+    def __getattr__(self, name):
+        return f"Attribute '{name}' doesn't exist, returning this instead"
+
+obj = DynamicObject()
+print(obj.existing)
+print(obj.non_existent)
+print(obj.another_missing)`,
+        output: `I exist
+Attribute 'non_existent' doesn't exist, returning this instead
+Attribute 'another_missing' doesn't exist, returning this instead`
+      }
+    ]
+  },
+  {
+    language: ProgrammingLanguage.Python,
     header: 'How to implement the Registry Pattern',
     categories: [Category.Basic],
     sections: [

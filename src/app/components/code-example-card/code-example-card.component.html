@@ -30,7 +30,7 @@
   @if (isExpanded) {
     <mat-card-content>
       @if (example.description) {
-        <div class="example-description">
+        <div class="example-description" (click)="$event.stopPropagation()">
           <mat-icon class="description-icon">info</mat-icon>
           <span>{{ example.description }}</span>
         </div>
@@ -57,7 +57,7 @@
               <mat-chip class="section-title">{{ section.title }}</mat-chip>
             </div>
             @if (section.description) {
-              <div class="section-description">
+              <div class="section-description" (click)="$event.stopPropagation()">
                 <mat-icon class="description-icon">info</mat-icon>
                 <span>{{ section.description }}</span>
               </div>
