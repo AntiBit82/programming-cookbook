@@ -4,6 +4,7 @@ import java from 'highlight.js/lib/languages/java';
 import sql from 'highlight.js/lib/languages/sql';
 import typescript from 'highlight.js/lib/languages/typescript';
 import xml from 'highlight.js/lib/languages/xml';
+import bash from 'highlight.js/lib/languages/bash';
 
 // Register languages
 hljs.registerLanguage('python', python);
@@ -11,9 +12,11 @@ hljs.registerLanguage('java', java);
 hljs.registerLanguage('sql', sql);
 hljs.registerLanguage('typescript', typescript);
 hljs.registerLanguage('xml', xml);
+hljs.registerLanguage('bash', bash);
 
 export enum ProgrammingLanguage {
   Angular = 'Angular',
+  Git = 'Git',
   Java = 'Java',
   PgPLSQL = 'PL/pgSQL',
   PostgreSQL = 'PostgreSQL',
@@ -52,6 +55,7 @@ export interface CodeExample {
 
 const LANGUAGE_MAP: { [key: string]: string } = {
   'Angular': 'typescript',
+  'Git': 'bash',
   'Python': 'python',
   'Java': 'java',
   'PgPLSQL': 'sql'
