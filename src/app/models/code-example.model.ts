@@ -5,6 +5,7 @@ import sql from 'highlight.js/lib/languages/sql';
 import typescript from 'highlight.js/lib/languages/typescript';
 import xml from 'highlight.js/lib/languages/xml';
 import bash from 'highlight.js/lib/languages/bash';
+import yaml from 'highlight.js/lib/languages/yaml';
 
 // Register languages
 hljs.registerLanguage('python', python);
@@ -13,6 +14,7 @@ hljs.registerLanguage('sql', sql);
 hljs.registerLanguage('typescript', typescript);
 hljs.registerLanguage('xml', xml);
 hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('yaml', yaml);
 
 export enum ProgrammingLanguage {
   Angular = 'Angular',
